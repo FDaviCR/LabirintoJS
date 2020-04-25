@@ -2,10 +2,29 @@
 	//elemento canvas e contexto de renderização
 	var cnv = document.querySelector("canvas");
 	var ctx = cnv.getContext("2d");
-	
+
+	var WIDTH = cnv.width, HEIGHT = cnv.height;
+
+	//armazenando valores das teclas
+	const LEFT = 37;
+	const UP = 38;
+	const RIGHT = 39;
+	const DOWN = 40;
+
+	var mvLeft = mvUp = mvRight = mvDown = false;
+
 	//tamanho dos blocos
 	var tileSize = 32;
-	
+
+	//desenho do player
+	var player = {
+		x: tileSize + 2,
+		y: tileSize + 2,
+		width: 28,
+		height: 28,
+		speed: 2
+	}
+
 	//mapa do labirinto
 	var maze = [
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -29,12 +48,75 @@
 		[1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1],
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	];
-	
+
+	var esq = 0;
+	var cim = 0;
+	var dir = 0;
+	var bai = 0;
+
+	window.addEventListener('keydown',keydownHandler, false);
+	window.addEventListener('keyup',keyupHandler, false);
+
+	function keydownHandler(event) {
+		var key = event.keyCode;
+		switch (key){
+			case LEFT: 
+				mvLeft = true;
+				esq=esq+1;
+				break;
+			case UP:
+				mvUp = true;
+				cim=cim+1;
+				break;
+			case RIGHT:
+				mvRight = true;
+				dir=dir+1;
+				break;
+			case DOWN:
+				mvDown = true;
+				bai=bai+1;
+				break;
+		}
+	}
+
+	function keyupHandler(event) {
+		var key = event.keyCode;
+		switch (key){
+			case LEFT: 
+				mvLeft = false;
+				break;
+			case UP:
+				mvUp = false;
+				break;
+			case RIGHT:
+				mvRight = false;
+				break;
+			case DOWN:
+				mvDown = false;
+				break;
+		}
+	}
+
 	//atualização cíclica do programa
-	function update(){}
-	
+	function update(){
+		if(mvLeft && !mvRight){
+			player.x -= player.speed;
+		}else
+		if(!mvLeft && mvRight){
+			player.x += player.speed;
+		}
+		if(mvUp && !mvDown){
+			player.y -= player.speed;
+		}else
+		if(!mvUp && mvDown){
+			player.y += player.speed;
+		}
+	}
+
 	//renderização (desenha na tela)
 	function render(){
+		ctx.clearRect(0,0,WIDTH,HEIGHT);
+		ctx.save();
 		//procedimento que varre as linhas e colunas do labirinto
 		for(var row in maze){
 			for(var column in maze){
@@ -50,13 +132,17 @@
 				}
 			}
 		}
+		ctx.fillStyle = "#00f";
+		ctx.fillRect(player.x,player.y,player.width,player.height);
+		ctx.restore();
 	}
-	
+
 	function loop(){
 		update();
 		render();
 		requestAnimationFrame(loop,cnv);
+
 	}
-	
+
 	requestAnimationFrame(loop,cnv);
 }());

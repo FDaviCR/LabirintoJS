@@ -63,18 +63,22 @@
 			case LEFT: 
 				mvLeft = true;
 				esq=esq+1;
+				document.getElementById('esquerda').innerHTML = esq;
 				break;
 			case UP:
 				mvUp = true;
 				cim=cim+1;
+				document.getElementById('cima').innerHTML = cim;
 				break;
 			case RIGHT:
 				mvRight = true;
 				dir=dir+1;
+				document.getElementById('direita').innerHTML = dir;
 				break;
 			case DOWN:
 				mvDown = true;
 				bai=bai+1;
+				document.getElementById('baixo').innerHTML = bai;
 				break;
 		}
 	}

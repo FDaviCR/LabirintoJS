@@ -2,6 +2,12 @@ html{
     background-color: rgba(10,10,10,0.5);
 }
 
+td{
+    width: 152px; 
+    height: 30px; 
+    text-align: center;
+}
+
 body{
     
 }
@@ -10,3 +16,13 @@ body{
     border:solid;
     margin-left: 30%;
 }
+
+.mov{
+    margin-left: 30%;
+}
+
+.direcao{
+    border:solid;
+    margin-left: 100px;
+}
+

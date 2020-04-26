@@ -16,12 +16,14 @@
 	//tamanho dos blocos
 	var tileSize = 32;
 
+	var walls = [];
+
 	//desenho do player
 	var player = {
 		x: tileSize + 2,
 		y: tileSize + 2,
-		width: 28,
-		height: 28,
+		width: 20,
+		height: 20,
 		speed: 2
 	}
 
@@ -49,10 +51,44 @@
 		[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 	];
 
+	for(var row in maze){
+		for(var column in maze[row]){
+			var tile = maze[row][column];
+			if(tile === 1){
+				var wall = {
+					x: tileSize*column,
+					y: tileSize*row,
+					width: tileSize,
+					height: tileSize
+				};
+				walls.push(wall);
+			}
+		}
+	}
+
 	var esq = 0;
 	var cim = 0;
 	var dir = 0;
 	var bai = 0;
+
+	function blockRectangle(objA, objB){
+		var distX = (objA.x + objA.width/2) - (objB.x + objB.width/2);
+		var distY = (objA.y + objA.height/2) - (objB.y + objB.height/2);
+
+		var sumWidth = (objA.width + objB.width)/2;
+		var sumHeight = (objA.height + objB.height)/2;
+
+		if(Math.abs(distX) < sumWidth && Math.abs(distY) < sumHeight){
+			var overlapX = sumWidth - Math.abs(distX);
+			var overlapY = sumHeight - Math.abs(distY);
+
+			if(overlapX > overlapY){
+				objA.y = distY > 0 ? objA.y + overlapY : objA.y - overlapY;
+			} else{
+				objA.x = distX > 0 ? objA.x + overlapX : objA.x - overlapX;
+			}
+		}
+	}
 
 	window.addEventListener('keydown',keydownHandler, false);
 	window.addEventListener('keyup',keyupHandler, false);
@@ -115,6 +151,11 @@
 		if(!mvUp && mvDown){
 			player.y += player.speed;
 		}
+
+		for(var i in walls){
+			var wall = walls[i];
+			blockRectangle(player, wall);
+		}
 	}
 
 	//renderização (desenha na tela)
@@ -123,7 +164,7 @@
 		ctx.save();
 		//procedimento que varre as linhas e colunas do labirinto
 		for(var row in maze){
-			for(var column in maze){
+			for(var column in maze[row]){
 				//pega o elemento armazenado em uma determinada linha/coluna
 				var tile = maze[row][column];
 				//se for um tijolo...
